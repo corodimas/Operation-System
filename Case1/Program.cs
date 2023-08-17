@@ -39,9 +39,10 @@ namespace Problem01
 
             return returnData;
         }
-        static void sum(byte[] Data_Global)
+        static void sum(byte[] Data_Global, long start, long end)
         {
-            for (int G_index = 0; G_index < 1000000000; G_index++)
+
+            for (long G_index = start; G_index < end; G_index++)
             {
                 if (Data_Global[G_index] % 2 == 0)
                 {
@@ -59,13 +60,55 @@ namespace Problem01
                 {
                     Sum_Global += (Data_Global[G_index] / 3);
                 }
-                Data_Global[G_index] = 0;   
+                Data_Global[G_index] = 0;
             }
+
         }
+
+        static void sum2(byte[] Data_Global, long start, long end)
+        {
+
+            for (long G_index = start; G_index < end; G_index++)
+            {
+                if (Data_Global[G_index] % 2 == 0)
+                {
+                    Sum_Global2 -= Data_Global[G_index];
+                }
+                else if (Data_Global[G_index] % 3 == 0)
+                {
+                    Sum_Global2 += (Data_Global[G_index]*2);
+                }
+                else if (Data_Global[G_index] % 5 == 0)
+                {
+                    Sum_Global2 += (Data_Global[G_index] / 2);
+                }
+                else if (Data_Global[G_index] %7 == 0)
+                {
+                    Sum_Global2 += (Data_Global[G_index] / 3);
+                }
+                Data_Global[G_index] = 0;
+            }
+
+        }
+
+
+        static void TestThread()
+        {
+            sum(Data,0,500000000);
+        }
+
+        static void TestThread2()
+        {
+            sum2(Data,500000000,1000000000);
+        }
+
         static void Main(string[] args)
         {
+            Thread th1 = new Thread(TestThread);
+            Thread th2 = new Thread(TestThread2);
+
             Stopwatch sw = new Stopwatch();
-            int i, y;
+            int y;
 
             
             Console.Write("Data read...");
@@ -83,18 +126,21 @@ namespace Problem01
             Console.Write("\n\nWorking...");
             sw.Start();
             
-                sum(Data);
+            th1.Start();
+            th2.Start();
+            th1.Join();
+            th2.Join();
 
             sw.Stop();
             Console.WriteLine("Done.");
 
             /* Result */
-            Console.WriteLine("Summation result: {0}", Sum_Global);
+            Console.WriteLine("Summation result: {0}", Sum_Global+Sum_Global2);
             Console.WriteLine("Time used: " + sw.ElapsedMilliseconds.ToString() + "ms");
         }
     }
 }
 
-//Time: 12376ms
+//Time: 7661ms
 //Value: 888701676
 #pragma warning restore SYSLIB0011
