@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Problem01
 {
@@ -21,9 +21,9 @@ namespace Problem01
             FileStream fs = new FileStream("Problem01.dat", FileMode.Open);
             BinaryFormatter bf = new BinaryFormatter();
 
-            try
+            try 
             {
-                Data_Global = (byte[])bf.Deserialize(fs);
+                Data_Global = (byte[]) bf.Deserialize(fs);
             }
             catch (SerializationException se)
             {
@@ -37,46 +37,31 @@ namespace Problem01
 
             return returnData;
         }
-
-        static void ParallelSum(int startIndex, int endIndex)
+        static void sum()
+        {
+            if (Data_Global[G_index] % 2 == 0)
             {
-                long sumEven = 0;
-                long sumMultipleOf3 = 0;
-                long sumMultipleOf5 = 0;
-                long sumMultipleOf7 = 0;
-
-                for (int i = startIndex; i < endIndex; i++)
-                {
-                    byte value = Data_Global[i];
-
-                    if (value % 2 == 0)
-                    {
-                        sumEven -= value;
-                    }
-                    else if (value % 3 == 0)
-                    {
-                        sumMultipleOf3 += value * 2;
-                    }
-                    else if (value % 5 == 0)
-                    {
-                        sumMultipleOf5 += value / 2;
-                    }
-                    else if (value % 7 == 0)
-                    {
-                        sumMultipleOf7 += value / 3;
-                    }
-
-                    Data_Global[i] = 0;
-                }
-
-                Interlocked.Add(ref Sum_Global, sumEven + sumMultipleOf3 + sumMultipleOf5 + sumMultipleOf7);
+                Sum_Global -= Data_Global[G_index];
             }
-
-
+            else if (Data_Global[G_index] % 3 == 0)
+            {
+                Sum_Global += (Data_Global[G_index]*2);
+            }
+            else if (Data_Global[G_index] % 5 == 0)
+            {
+                Sum_Global += (Data_Global[G_index] / 2);
+            }
+            else if (Data_Global[G_index] %7 == 0)
+            {
+                Sum_Global += (Data_Global[G_index] / 3);
+            }
+            Data_Global[G_index] = 0;
+            G_index++;   
+        }
         static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
-            int y;
+            int i, y;
 
             /* Read data from file */
             Console.Write("Data read...");
@@ -88,23 +73,13 @@ namespace Problem01
             else
             {
                 Console.WriteLine("Read Failed!");
-                return;
             }
-
-            int numThreads = Environment.ProcessorCount; // Get the number of available logical processors
-            int chunkSize = Data_Global.Length / numThreads; // Divide the data into equal chunks
 
             /* Start */
             Console.Write("\n\nWorking...");
             sw.Start();
-
-            Parallel.For(0, numThreads, threadIndex =>
-            {
-                int start = threadIndex * chunkSize;
-                int end = threadIndex == numThreads - 1 ? Data_Global.Length : start + chunkSize;
-                ParallelSum(start, end);
-            });
-
+            for (i = 0; i < 1000000000; i++)
+                sum();
             sw.Stop();
             Console.WriteLine("Done.");
 
