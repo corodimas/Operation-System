@@ -11,9 +11,11 @@ namespace Problem01
 {
     class Program
     {
-        static byte[] Data_Global = new byte[1000000000];
+        static byte[] Data = new byte[1000000000];
         static long Sum_Global = 0;
-        static int G_index = 0;
+        static long Sum_Global2 = 0;
+        static int index = 0;
+        static int index2 = 500000000;
 
         static int ReadData()
         {
@@ -23,7 +25,7 @@ namespace Problem01
 
             try 
             {
-                Data_Global = (byte[]) bf.Deserialize(fs);
+                Data = (byte[]) bf.Deserialize(fs);
             }
             catch (SerializationException se)
             {
@@ -37,33 +39,35 @@ namespace Problem01
 
             return returnData;
         }
-        static void sum()
+        static void sum(byte[] Data_Global)
         {
-            if (Data_Global[G_index] % 2 == 0)
+            for (int G_index = 0; G_index < 1000000000; G_index++)
             {
-                Sum_Global -= Data_Global[G_index];
+                if (Data_Global[G_index] % 2 == 0)
+                {
+                    Sum_Global -= Data_Global[G_index];
+                }
+                else if (Data_Global[G_index] % 3 == 0)
+                {
+                    Sum_Global += (Data_Global[G_index]*2);
+                }
+                else if (Data_Global[G_index] % 5 == 0)
+                {
+                    Sum_Global += (Data_Global[G_index] / 2);
+                }
+                else if (Data_Global[G_index] %7 == 0)
+                {
+                    Sum_Global += (Data_Global[G_index] / 3);
+                }
+                Data_Global[G_index] = 0;   
             }
-            else if (Data_Global[G_index] % 3 == 0)
-            {
-                Sum_Global += (Data_Global[G_index]*2);
-            }
-            else if (Data_Global[G_index] % 5 == 0)
-            {
-                Sum_Global += (Data_Global[G_index] / 2);
-            }
-            else if (Data_Global[G_index] %7 == 0)
-            {
-                Sum_Global += (Data_Global[G_index] / 3);
-            }
-            Data_Global[G_index] = 0;
-            G_index++;   
         }
         static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
             int i, y;
 
-            /* Read data from file */
+            
             Console.Write("Data read...");
             y = ReadData();
             if (y == 0)
@@ -78,8 +82,9 @@ namespace Problem01
             /* Start */
             Console.Write("\n\nWorking...");
             sw.Start();
-            for (i = 0; i < 1000000000; i++)
-                sum();
+            
+                sum(Data);
+
             sw.Stop();
             Console.WriteLine("Done.");
 
@@ -90,4 +95,6 @@ namespace Problem01
     }
 }
 
+//Time: 12376ms
+//Value: 888701676
 #pragma warning restore SYSLIB0011

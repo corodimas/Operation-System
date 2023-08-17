@@ -13,3 +13,18 @@ C:\Users\CD\Desktop\LAB\Os\test\obj\Debug\net7.0\refint\test.dll
 C:\Users\CD\Desktop\LAB\Os\test\obj\Debug\net7.0\test.pdb
 C:\Users\CD\Desktop\LAB\Os\test\obj\Debug\net7.0\test.genruntimeconfig.cache
 C:\Users\CD\Desktop\LAB\Os\test\obj\Debug\net7.0\ref\test.dll
+C:\Users\CD\Desktop\LAB\Operation System\Case1\bin\Debug\net7.0\test.exe
+C:\Users\CD\Desktop\LAB\Operation System\Case1\bin\Debug\net7.0\test.deps.json
+C:\Users\CD\Desktop\LAB\Operation System\Case1\bin\Debug\net7.0\test.runtimeconfig.json
+C:\Users\CD\Desktop\LAB\Operation System\Case1\bin\Debug\net7.0\test.dll
+C:\Users\CD\Desktop\LAB\Operation System\Case1\bin\Debug\net7.0\test.pdb
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.csproj.AssemblyReference.cache
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.AssemblyInfoInputs.cache
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.AssemblyInfo.cs
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.csproj.CoreCompileInputs.cache
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.dll
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\refint\test.dll
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.pdb
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\test.genruntimeconfig.cache
+C:\Users\CD\Desktop\LAB\Operation System\Case1\obj\Debug\net7.0\ref\test.dll
