@@ -11,15 +11,9 @@ namespace Problem01
 {
     class Program
     {
-        
         static byte[] Data = new byte[1000000000];
-        static long Sum_Global1 = 0;
-        static long Sum_Global2 = 0;
-        static long Sum_Global3 = 0;
-        static long Sum_Global4 = 0;
+        static long[] Sum_Globals = new long[10];
 
-        static int index = 0;
-        static int index2 = 500000000;
 
         static int ReadData()
         {
@@ -27,9 +21,9 @@ namespace Problem01
             FileStream fs = new FileStream("Problem01.dat", FileMode.Open);
             BinaryFormatter bf = new BinaryFormatter();
 
-            try 
+            try
             {
-                Data = (byte[]) bf.Deserialize(fs);
+                Data = (byte[])bf.Deserialize(fs);
             }
             catch (SerializationException se)
             {
@@ -43,147 +37,47 @@ namespace Problem01
 
             return returnData;
         }
-        static void sum(byte[] Data_Global, long start, long end)
-        {
 
+        static void SumInRange(byte[] Data_Global, long start, long end, ref long Sum_Global)
+        {
             for (long G_index = start; G_index < end; G_index++)
             {
                 if (Data_Global[G_index] % 2 == 0)
                 {
-                    Sum_Global1 -= Data_Global[G_index];
+                    Sum_Global -= Data_Global[G_index];
                 }
                 else if (Data_Global[G_index] % 3 == 0)
                 {
-                    Sum_Global1 += (Data_Global[G_index]*2);
+                    Sum_Global += (Data_Global[G_index] * 2);
                 }
                 else if (Data_Global[G_index] % 5 == 0)
                 {
-                    Sum_Global1 += (Data_Global[G_index] / 2);
+                    Sum_Global += (Data_Global[G_index] / 2);
                 }
-                else if (Data_Global[G_index] %7 == 0)
+                else if (Data_Global[G_index] % 7 == 0)
                 {
-                    Sum_Global1 += (Data_Global[G_index] / 3);
+                    Sum_Global += (Data_Global[G_index] / 3);
                 }
                 Data_Global[G_index] = 0;
             }
-
         }
 
-        static void sum2(byte[] Data_Global, long start, long end)
+        static void TestThread(int threadIndex)
         {
-
-            for (long G_index = start; G_index < end; G_index++)
-            {
-                if (Data_Global[G_index] % 2 == 0)
-                {
-                    Sum_Global2 -= Data_Global[G_index];
-                }
-                else if (Data_Global[G_index] % 3 == 0)
-                {
-                    Sum_Global2 += (Data_Global[G_index]*2);
-                }
-                else if (Data_Global[G_index] % 5 == 0)
-                {
-                    Sum_Global2 += (Data_Global[G_index] / 2);
-                }
-                else if (Data_Global[G_index] %7 == 0)
-                {
-                    Sum_Global2 += (Data_Global[G_index] / 3);
-                }
-                Data_Global[G_index] = 0;
-            }
-
-        }
-
-        static void sum3(byte[] Data_Global, long start, long end)
-        {
-
-            for (long G_index = start; G_index < end; G_index++)
-            {
-                if (Data_Global[G_index] % 2 == 0)
-                {
-                    Sum_Global3 -= Data_Global[G_index];
-                }
-                else if (Data_Global[G_index] % 3 == 0)
-                {
-                    Sum_Global3 += (Data_Global[G_index]*2);
-                }
-                else if (Data_Global[G_index] % 5 == 0)
-                {
-                    Sum_Global3 += (Data_Global[G_index] / 2);
-                }
-                else if (Data_Global[G_index] %7 == 0)
-                {
-                    Sum_Global3 += (Data_Global[G_index] / 3);
-                }
-                Data_Global[G_index] = 0;
-            }
-
-        }
-
-        static void sum4(byte[] Data_Global, long start, long end)
-        {
-
-            for (long G_index = start; G_index < end; G_index++)
-            {
-                if (Data_Global[G_index] % 2 == 0)
-                {
-                    Sum_Global4 -= Data_Global[G_index];
-                }
-                else if (Data_Global[G_index] % 3 == 0)
-                {
-                    Sum_Global4 += (Data_Global[G_index]*2);
-                }
-                else if (Data_Global[G_index] % 5 == 0)
-                {
-                    Sum_Global4 += (Data_Global[G_index] / 2);
-                }
-                else if (Data_Global[G_index] %7 == 0)
-                {
-                    Sum_Global4 += (Data_Global[G_index] / 3);
-                }
-                Data_Global[G_index] = 0;
-            }
-
-        }
-
-  
-
-
-        static void TestThread()
-        {
-            sum(Data,0,250000000);
-        }
-
-        static void TestThread2()
-        {
-            sum2(Data,250000000,500000000);
-        }
-        
-        static void TestThread3()
-        {
-            sum3(Data,500000000,750000000);
-        }
-
-        static void TestThread4()
-        {
-            sum4(Data,750000000,1000000000);
+            long start = threadIndex * 100000000;
+            long end = start + 100000000;
+            SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
         }
 
         static void Main(string[] args)
         {
             int coreCount = Environment.ProcessorCount;
 
-            Thread th1 = new Thread(TestThread);
-            Thread th2 = new Thread(TestThread2);
-            Thread th3 = new Thread(TestThread3);
-            Thread th4 = new Thread(TestThread4);
-
+            Thread[] threads = new Thread[10];
 
             Stopwatch sw = new Stopwatch();
             int y;
 
-            
             Console.Write("Data read...");
             y = ReadData();
             if (y == 0)
@@ -198,27 +92,34 @@ namespace Problem01
             /* Start */
             Console.Write("\n\nWorking...");
             sw.Start();
-            
-            th1.Start();
-            th2.Start();
-            th3.Start();
-            th4.Start();
-            th1.Join();
-            th2.Join();
-            th3.Join();
-            th4.Join();
+
+            for (int i = 0; i < 10; i++)
+            {
+                int threadIndex = i; // To avoid closure capture issues
+                threads[i] = new Thread(() => TestThread(threadIndex));
+                threads[i].Start();
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                threads[i].Join();
+            }
 
             sw.Stop();
             Console.WriteLine("Done.");
 
-
             /* Result */
-            Console.WriteLine("Summation result: {0}", Sum_Global1+Sum_Global2+Sum_Global3+Sum_Global4);
-            Console.WriteLine("Time used: " + sw.ElapsedMilliseconds.ToString() + "ms");
+            long totalSum = 0;
+            foreach (long sum in Sum_Globals)
+            {
+                totalSum += sum;
+            }
+            Console.WriteLine("Summation result: " + totalSum);
+            Console.WriteLine("Time used: " + sw.ElapsedMilliseconds + "ms");
         }
     }
 }
 
-//Time: 7661ms
+//Time: 4464ms
 //Value: 888701676
 #pragma warning restore SYSLIB0011
