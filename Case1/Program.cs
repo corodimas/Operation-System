@@ -11,9 +11,9 @@ namespace Problem01
 {
     class Program
     {
-        static byte[] Data = new byte[1000000000];
-        static long[] Sum_Globals = new long[10];
-
+        static byte[]? Data;
+        static long[]? Sum_Globals;
+        static object lockObj = new object();
 
         static int ReadData()
         {
@@ -38,48 +38,58 @@ namespace Problem01
             return returnData;
         }
 
-        static void SumInRange(byte[] Data_Global, long start, long end, ref long Sum_Global)
+        static void SumInRange(byte[] data, long start, long end, ref long sum)
         {
+            
+            long localSum = 0;
+
             for (long G_index = start; G_index < end; G_index++)
             {
-                if (Data_Global[G_index] % 2 == 0)
+                if (data[G_index] % 2 == 0)
                 {
-                    Sum_Global -= Data_Global[G_index];
+                    localSum -= data[G_index];
                 }
-                else if (Data_Global[G_index] % 3 == 0)
+                else if (data[G_index] % 3 == 0)
                 {
-                    Sum_Global += (Data_Global[G_index] * 2);
+                    localSum += (data[G_index] * 2);
                 }
-                else if (Data_Global[G_index] % 5 == 0)
+                else if (data[G_index] % 5 == 0)
                 {
-                    Sum_Global += (Data_Global[G_index] / 2);
+                    localSum += (data[G_index] / 2);
                 }
-                else if (Data_Global[G_index] % 7 == 0)
+                else if (data[G_index] % 7 == 0)
                 {
-                    Sum_Global += (Data_Global[G_index] / 3);
+                    localSum += (data[G_index] / 3);
                 }
-                Data_Global[G_index] = 0;
+                data[G_index] = 0;
+            }
+
+            lock (lockObj)
+            {
+                sum += localSum;
             }
         }
 
-        static void TestThread(int threadIndex)
+        static void TestThread(int threadIndex, long dataSize, long chunkSize)
         {
-            long start = threadIndex * 100000000;
-            long end = start + 100000000;
+            long start = threadIndex * chunkSize;
+            long end = Math.Min(start + chunkSize, dataSize);
+
+            SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
+        }
+
+        static void FinalThread(int threadIndex, long dataSize, long chunkSize)
+        {
+            long start = threadIndex * chunkSize;
+            long end = dataSize;
+            
             SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
         }
 
         static void Main(string[] args)
         {
-            int coreCount = Environment.ProcessorCount;
-
-            Thread[] threads = new Thread[10];
-
-            Stopwatch sw = new Stopwatch();
-            int y;
-
             Console.Write("Data read...");
-            y = ReadData();
+            int y = ReadData();
             if (y == 0)
             {
                 Console.WriteLine("Complete.");
@@ -87,20 +97,40 @@ namespace Problem01
             else
             {
                 Console.WriteLine("Read Failed!");
+                return;
             }
+
+            int coreCount = Environment.ProcessorCount;
+            long dataSize = Data.Length;
+            long chunkSize = dataSize / coreCount;
+            long dataleft = dataSize % coreCount;
+
+            Thread[] threads = new Thread[coreCount];
+            Sum_Globals = new long[coreCount];
+
+            Stopwatch sw = new Stopwatch();
 
             /* Start */
-            Console.Write("\n\nWorking...");
+            Console.Write(dataleft);
             sw.Start();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < coreCount; i++)
             {
-                int threadIndex = i; // To avoid closure capture issues
-                threads[i] = new Thread(() => TestThread(threadIndex));
-                threads[i].Start();
+                int threadIndex = i;
+                if(i != coreCount-1)
+                {
+                    threads[i] = new Thread(() => TestThread(threadIndex, dataSize, chunkSize));
+                    threads[i].Start();
+                }
+                else
+                {
+                    threads[i] = new Thread(() => FinalThread(threadIndex, dataSize, chunkSize));
+                    threads[i].Start();
+                }
+                
             }
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < coreCount; i++)
             {
                 threads[i].Join();
             }
@@ -117,9 +147,11 @@ namespace Problem01
             Console.WriteLine("Summation result: " + totalSum);
             Console.WriteLine("Time used: " + sw.ElapsedMilliseconds + "ms");
         }
+
     }
 }
 
-//Time: 4464ms
+//Time: 1533ms
 //Value: 888701676
 #pragma warning restore SYSLIB0011
+
