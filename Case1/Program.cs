@@ -1,6 +1,9 @@
-﻿using System;
+﻿﻿#pragma warning disable SYSLIB0011, CS8604 ,CS8602
+
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 
@@ -8,12 +11,36 @@ namespace Problem01
 {
     class Program
     {
-        static byte[] Data;
-        static long[] Sum_Globals;
+        static byte[]? Data;
+        static long[]? Sum_Globals;
         static object lockObj = new object();
+
+        static int ReadData()
+        {
+            int returnData = 0;
+            FileStream fs = new FileStream("Problem01.dat", FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+
+            try
+            {
+                Data = (byte[])bf.Deserialize(fs);
+            }
+            catch (SerializationException se)
+            {
+                Console.WriteLine("Read Failed:" + se.Message);
+                returnData = 1;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            return returnData;
+        }
 
         static void SumInRange(byte[] data, long start, long end, ref long sum)
         {
+            
             long localSum = 0;
 
             for (long G_index = start; G_index < end; G_index++)
@@ -47,6 +74,15 @@ namespace Problem01
         {
             long start = threadIndex * chunkSize;
             long end = Math.Min(start + chunkSize, dataSize);
+
+            SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
+        }
+
+        static void FinalThread(int threadIndex, long dataSize, long chunkSize)
+        {
+            long start = threadIndex * chunkSize;
+            long end = dataSize;
+            
             SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
         }
 
@@ -67,6 +103,7 @@ namespace Problem01
             int coreCount = Environment.ProcessorCount;
             long dataSize = Data.Length;
             long chunkSize = dataSize / coreCount;
+            long dataleft = dataSize % coreCount;
 
             Thread[] threads = new Thread[coreCount];
             Sum_Globals = new long[coreCount];
@@ -74,14 +111,23 @@ namespace Problem01
             Stopwatch sw = new Stopwatch();
 
             /* Start */
-            Console.Write("\n\nWorking...");
+            Console.Write(dataleft);
             sw.Start();
 
             for (int i = 0; i < coreCount; i++)
             {
                 int threadIndex = i;
-                threads[i] = new Thread(() => TestThread(threadIndex, dataSize, chunkSize));
-                threads[i].Start();
+                if(i != coreCount-1)
+                {
+                    threads[i] = new Thread(() => TestThread(threadIndex, dataSize, chunkSize));
+                    threads[i].Start();
+                }
+                else
+                {
+                    threads[i] = new Thread(() => FinalThread(threadIndex, dataSize, chunkSize));
+                    threads[i].Start();
+                }
+                
             }
 
             for (int i = 0; i < coreCount; i++)
@@ -102,6 +148,9 @@ namespace Problem01
             Console.WriteLine("Time used: " + sw.ElapsedMilliseconds + "ms");
         }
 
-        // Other methods like ReadData can be here...
     }
 }
+
+//Time: 1533ms
+//Value: 888701676
+#pragma warning restore SYSLIB0011, CS8604 ,CS8602
