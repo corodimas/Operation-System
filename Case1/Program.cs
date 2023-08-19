@@ -12,8 +12,7 @@ namespace Problem01
     class Program
     {
         static byte[]? Data;
-        static long[]? Sum_Globals;
-        static object lockObj = new object();
+        static long final = 0;
 
         static int ReadData()
         {
@@ -64,10 +63,7 @@ namespace Problem01
                 data[G_index] = 0;
             }
 
-            lock (lockObj)
-            {
-                sum += localSum;
-            }
+            sum += localSum;
         }
 
         static void TestThread(int threadIndex, long dataSize, long chunkSize)
@@ -75,7 +71,7 @@ namespace Problem01
             long start = threadIndex * chunkSize;
             long end = Math.Min(start + chunkSize, dataSize);
 
-            SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
+            SumInRange(Data, start, end, ref final);
         }
 
         static void FinalThread(int threadIndex, long dataSize, long chunkSize)
@@ -83,11 +79,12 @@ namespace Problem01
             long start = threadIndex * chunkSize;
             long end = dataSize;
             
-            SumInRange(Data, start, end, ref Sum_Globals[threadIndex]);
+            SumInRange(Data, start, end, ref final);
         }
 
         static void Main(string[] args)
         {
+
             Console.Write("Data read...");
             int y = ReadData();
             if (y == 0)
@@ -106,12 +103,11 @@ namespace Problem01
             long dataleft = dataSize % coreCount;
 
             Thread[] threads = new Thread[coreCount];
-            Sum_Globals = new long[coreCount];
 
             Stopwatch sw = new Stopwatch();
 
             /* Start */
-            Console.Write(dataleft);
+            Console.Write("\n\nWorking..");
             sw.Start();
 
             for (int i = 0; i < coreCount; i++)
@@ -129,7 +125,7 @@ namespace Problem01
                 }
                 
             }
-
+            
             for (int i = 0; i < coreCount; i++)
             {
                 threads[i].Join();
@@ -138,13 +134,8 @@ namespace Problem01
             sw.Stop();
             Console.WriteLine("Done.");
 
-            /* Result */
-            long totalSum = 0;
-            foreach (long sum in Sum_Globals)
-            {
-                totalSum += sum;
-            }
-            Console.WriteLine("Summation result: " + totalSum);
+
+            Console.WriteLine("Summation result: " + final);
             Console.WriteLine("Time used: " + sw.ElapsedMilliseconds + "ms");
         }
 
