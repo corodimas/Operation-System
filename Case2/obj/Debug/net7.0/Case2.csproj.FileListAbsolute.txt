@@ -1,0 +1,14 @@
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\bin\Debug\net7.0\Case2.exe
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\bin\Debug\net7.0\Case2.deps.json
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\bin\Debug\net7.0\Case2.runtimeconfig.json
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\bin\Debug\net7.0\Case2.dll
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\bin\Debug\net7.0\Case2.pdb
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.AssemblyInfoInputs.cache
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.AssemblyInfo.cs
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.csproj.CoreCompileInputs.cache
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.dll
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\refint\Case2.dll
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.pdb
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\Case2.genruntimeconfig.cache
+C:\Users\CD\Desktop\LAB\Operation System\Operation-System\Case2\obj\Debug\net7.0\ref\Case2.dll
