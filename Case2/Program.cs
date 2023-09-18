@@ -9,29 +9,41 @@ namespace OS_Problem_02
         static int Front = 0;
         static int Back = 0;
         static int Count = 0;
+
         static readonly object lockObject = new object();
 
         static void EnQueue(int eq)
         {
-
             lock (lockObject)
             {
+                while (Count == TSBuffer.Length)
+                {
+                    Monitor.Wait(lockObject);
+                }
+
                 TSBuffer[Back] = eq;
                 Back = (Back + 1) % TSBuffer.Length;
                 Count += 1;
+
+                Monitor.Pulse(lockObject);
             }
-
-
         }
 
-        static int DeQueue()
+        static int DeQueue(object t)
         {
             int x = 0;
             lock (lockObject)
             {
+                while (Count == 0)
+                {
+                    Console.WriteLine("\n --- Thread {0} Buffer is empty wait for dequeue --- \n",t);
+                    Monitor.Wait(lockObject);             
+                }
                 x = TSBuffer[Front];
                 Front = (Front + 1) % TSBuffer.Length;
                 Count -= 1;
+
+                Monitor.Pulse(lockObject);
             }
             return x;
         }
@@ -61,6 +73,7 @@ namespace OS_Problem_02
         }
 
 
+
         static void th02(object t)
         {
             int i;
@@ -68,9 +81,12 @@ namespace OS_Problem_02
 
             for (i=0; i< 60; i++)
             {
-                j = DeQueue();
+                lock (lockObject)
+                {
+                j = DeQueue(t);
                 Console.WriteLine("j={0}, thread:{1}", j, t);
-                Thread.Sleep(100);
+                Thread.Sleep(50);
+                }
             }
         }
         static void Main(string[] args)
