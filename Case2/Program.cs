@@ -75,20 +75,23 @@ namespace OS_Problem_02
 
 
         static void th02(object t)
-        {
-            int i;
-            int j;
-
-            for (i=0; i< 60; i++)
             {
-                lock (lockObject)
+                int j;
+                int currentThread = (int)t;
+
+                while (true)
                 {
-                j = DeQueue(t);
-                Console.WriteLine("j={0}, thread:{1}", j, t);
-                Thread.Sleep(50);
+                    lock (lockObject)
+                    {
+                        if (Count > 0 && Front % 3 == currentThread - 1)
+                        {
+                            j = DeQueue(t);
+                            Console.WriteLine("j={0}, thread:{1}", j, t);
+                            Thread.Sleep(1);
+                        }
+                    }
                 }
             }
-        }
         static void Main(string[] args)
         {
             Thread t1 = new Thread(th01);
