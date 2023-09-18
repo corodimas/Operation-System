@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\Case2\\Case2.csproj": {}
+    "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\case2\\Case2.csproj": {}
   },
   "projects": {
-    "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\Case2\\Case2.csproj": {
+    "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\case2\\Case2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\Case2\\Case2.csproj",
+        "projectUniqueName": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\case2\\Case2.csproj",
         "projectName": "Case2",
-        "projectPath": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\Case2\\Case2.csproj",
+        "projectPath": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\case2\\Case2.csproj",
         "packagesPath": "C:\\Users\\CD\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\Case2\\obj\\",
+        "outputPath": "C:\\Users\\CD\\Desktop\\LAB\\Operation System\\Operation-System\\case2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\CD\\AppData\\Roaming\\NuGet\\NuGet.Config"
